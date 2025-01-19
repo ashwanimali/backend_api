@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { LoginUserDto }  from './dto/login-user.dto';
@@ -12,17 +12,20 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) { }
 
-    async register(registerDto: RegisterUserDto) {
-        const hashedPassword = await HashUtil.hashPassword(registerDto.password);
-        return this.usersService.create({ ...registerDto, password: hashedPassword });
-    }
-
     async login(loginDto: LoginUserDto) {
-        const user = await this.usersService.findByEmail(loginDto.email);
-        if (!user || !(await HashUtil.comparePasswords(loginDto.password, user.password))) {
-            throw new UnauthorizedException('Invalid credentials');
+        try {
+            const { email, password } = loginDto
+            if (!email || !password) {
+                throw new HttpException('Send Email and Password', 400);
+            }
+            const user = await this.usersService.findByEmail(email);
+            if (!user || !(await HashUtil.comparePasswords(password, user.password))) {
+                throw new UnauthorizedException('Invalid credentials');
+            }
+            const payload = { sub: user.id, role: user.role };
+            return { access_token: this.jwtService.sign(payload) };
+        } catch (error) {
+            throw error
         }
-        const payload = { sub: user.id, role: user.role };
-        return { access_token: this.jwtService.sign(payload) };
     }
 }

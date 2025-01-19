@@ -2,14 +2,26 @@ import * as bcrypt from 'bcrypt';
 
 export class HashUtil {
     static async hashPassword(password: string): Promise<string> {
-        const salt = await bcrypt.genSalt();
-        return bcrypt.hash(password, salt);
+        try {
+            const saltRounds = 10; // Explicitly set salt rounds
+            const salt = await bcrypt.genSalt(saltRounds);
+            const hash = await bcrypt.hash(password, salt);
+            return hash
+        } catch (error) {
+            throw error
+        }
+
     }
 
     static async comparePasswords(
         plainPassword: string,
         hashedPassword: string,
     ): Promise<boolean> {
-        return bcrypt.compare(plainPassword, hashedPassword);
+        try {
+            return bcrypt.compare(plainPassword, hashedPassword);
+
+        } catch (error) {
+            throw error
+        }
     }
 }

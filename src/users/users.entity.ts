@@ -5,13 +5,13 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({ nullable: false }) // Ensuring 'name' is required
     name: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: false }) // Ensuring 'email' is required and unique
     email: string;
 
-    @Column()
+    @Column({ nullable: false }) // Ensuring 'password' is required
     password: string;
 
     @Column({ default: 'viewer' })

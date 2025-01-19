@@ -35,34 +35,6 @@ describe('AuthService', () => {
         expect(service).toBeDefined();
     });
 
-    describe('register', () => {
-        it('should hash the password and create a user', async () => {
-            const registerDto = { email: 'test@example.com', password: 'password', name: 'Name of user' };
-            const hashedPassword = 'hashedPassword';
-            jest.spyOn(HashUtil, 'hashPassword').mockResolvedValue(hashedPassword);
-            jest.spyOn(usersService, 'create').mockResolvedValue({
-                id: '1',
-                email: 'test@example.com',
-                password: hashedPassword,
-                name: 'Name of user',
-                role: 'viewer'
-            });
-
-            const result = await service.register(registerDto);
-
-            expect(HashUtil.hashPassword).toHaveBeenCalledWith(registerDto.password);
-            expect(usersService.create).toHaveBeenCalledWith({
-                email: 'test@example.com',
-                password: hashedPassword,
-            });
-            expect(result).toEqual({
-                id: '1',
-                email: 'test@example.com',
-                password: hashedPassword,
-            });
-        });
-    });
-
     describe('login', () => {
         it('should return an access token for valid credentials', async () => {
             const loginDto = { email: 'test@example.com', password: 'password' };

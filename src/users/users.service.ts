@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HashUtil } from '../common/utils/hash.util';
@@ -14,17 +14,47 @@ export class UsersService {
     ) { }
 
     async create(createUserDto: CreateUserDto) {
-        const hashedPassword = await HashUtil.hashPassword(createUserDto.password);
-        const user = this.userRepository.create({ ...createUserDto, password: hashedPassword });
-        return this.userRepository.save(user);
+        try {
+            // Check if password is provided
+            if (!createUserDto?.password) {
+                throw new HttpException('Password is required', 400);
+            }
+
+            // // Ensure the name field is not missing
+            if (!createUserDto?.name) {
+                throw new HttpException('Name is required', 400);
+            }
+
+            const hashedPassword = await HashUtil.hashPassword(createUserDto.password);
+            const user = this.userRepository.create({ ...createUserDto, password: hashedPassword });
+            return await this.userRepository.save(user);
+
+        } catch (error) {
+            if (error instanceof QueryFailedError) {
+                // Handle database constraint violation errors
+
+                throw new HttpException('Database query failed', 500);
+            }
+            // Re-throw other errors if they're not database-related
+            throw error;
+        }
     }
 
+
     async findAll() {
-        return this.userRepository.find();
+        return await this.userRepository.find();
     }
 
     async findByEmail(email: string): Promise<User | undefined> {
-        return this.userRepository.findOne({ where: { email } });
+        return await this.userRepository.findOne({ where: { email } });
+    }
+
+    async findByRole(role: string): Promise<User | undefined> {
+        return await this.userRepository.findOne({ where: { role } })
+    }
+
+    async findById(userId: string): Promise<User | null> {
+        return this.userRepository.findOne({ where: { id: userId } });
     }
 
     async update(id: string, updateUserDto: UpdateUserDto) {
@@ -34,4 +64,16 @@ export class UsersService {
         }
         return this.userRepository.save(user);
     }
+
+    async delete(id: string) {
+        const user = await this.userRepository.findOne({ where: { id } });
+
+        if (!user) {
+            throw new NotFoundException(`User with ID ${id} not found`);
+        }
+
+        await this.userRepository.delete(id);
+        return { message: `User with ID ${id} successfully deleted` };
+    }
+
 }

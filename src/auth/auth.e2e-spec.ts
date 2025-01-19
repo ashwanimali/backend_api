@@ -15,18 +15,6 @@ describe('AuthController (e2e)', () => {
         await app.init();
     });
 
-    it('/auth/register (POST) - should register a new user', async () => {
-        const response = await request(app.getHttpServer())
-            .post('/auth/register')
-            .send({ email: 'test@example.com', password: 'password' })
-            .expect(201);
-
-        expect(response.body).toMatchObject({
-            id: expect.any(String),
-            email: 'test@example.com',
-        });
-    });
-
     it('/auth/login (POST) - should login and return access token', async () => {
         const response = await request(app.getHttpServer())
             .post('/auth/login')

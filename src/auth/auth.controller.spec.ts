@@ -24,20 +24,6 @@ describe('AuthController', () => {
         expect(controller).toBeDefined();
     });
 
-    describe('register', () => {
-        it('should call AuthService.register and return the result', async () => {
-            const registerDto = { email: 'test@example.com', password: 'password', name: 'Name of user', };
-            const createdUser = { id: '1', email: 'test@example.com', name: 'Name of user' };
-
-            jest.spyOn(mockAuthService, 'register').mockResolvedValue(createdUser);
-
-            const result = await controller.register(registerDto);
-
-            expect(mockAuthService.register).toHaveBeenCalledWith(registerDto);
-            expect(result).toEqual(createdUser);
-        });
-    });
-
     describe('login', () => {
         it('should call AuthService.login and return the result', async () => {
             const loginDto = { email: 'test@example.com', password: 'password' };
