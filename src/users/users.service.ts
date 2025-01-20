@@ -25,17 +25,24 @@ export class UsersService {
                 throw new HttpException('Name is required', 400);
             }
 
+            if (!createUserDto?.email) {
+                throw new HttpException('Email is required', 400);
+            }
+
+            const existUser = await this.findByEmail(createUserDto?.email)
+            if (existUser && existUser?.email) {
+                throw new HttpException('User found with email, try with different email', 400);
+            }
+            console.log("existUser", existUser)
             const hashedPassword = await HashUtil.hashPassword(createUserDto.password);
             const user = this.userRepository.create({ ...createUserDto, password: hashedPassword });
             return await this.userRepository.save(user);
 
         } catch (error) {
             if (error instanceof QueryFailedError) {
-                // Handle database constraint violation errors
 
                 throw new HttpException('Database query failed', 500);
             }
-            // Re-throw other errors if they're not database-related
             throw error;
         }
     }

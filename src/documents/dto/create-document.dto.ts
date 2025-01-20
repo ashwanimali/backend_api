@@ -8,4 +8,7 @@ export class CreateDocumentDto {
     @IsNotEmpty()
     @IsString()
     description: string;
+
+    @IsString()
+    createdBy: string;
 }

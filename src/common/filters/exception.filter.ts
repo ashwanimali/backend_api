@@ -4,7 +4,7 @@ import { Request, Response } from 'express'
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
-    catch(exception: unknown, host: ArgumentsHost) {
+    catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
@@ -14,7 +14,7 @@ export class AllExceptionFilter implements ExceptionFilter {
             statusCode: status,
             date: new Date().toISOString(),
             path: request.url,
-            message: exception,
+            message: exception?.message ? exception?.message : exception?.response,
             type: "all"
         })
     }

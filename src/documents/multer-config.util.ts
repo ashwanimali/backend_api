@@ -11,7 +11,7 @@ export const multerConfig = {
         },
     }),
     fileFilter: (req, file, callback) => {
-        const allowedTypes = ['application/pdf', 'application/msword'];
+        const allowedTypes = ['application/pdf'];
         if (allowedTypes.includes(file.mimetype)) {
             callback(null, true);
         } else {

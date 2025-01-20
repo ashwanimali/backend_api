@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DocumentsController } from './documents.controller';
-import { DocumentsService } from './documents.service';
-import { CreateDocumentDto } from './dto/create-document.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
+import { DocumentsController } from '../src/documents/documents.controller';
+import { DocumentsService } from '../src/documents/documents.service';
+import { CreateDocumentDto } from '../src/documents/dto/create-document.dto';
+import { UpdateDocumentDto } from '../src/documents/dto/update-document.dto';
 
 describe('DocumentsController', () => {
     let controller: DocumentsController;

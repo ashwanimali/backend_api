@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
+import { UsersService } from '../src/users/users.service';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from './users.entity';
+import { User } from '../src/users/users.entity';
 
 describe('UsersService', () => {
     let service: UsersService;
@@ -29,7 +29,7 @@ describe('UsersService', () => {
 
     describe('create', () => {
         it('should create a new user', async () => {
-            const userDto = { email: 'test@example.com', password: 'password',name:"nameofuser" };
+            const userDto = { email: 'test@example.com', password: 'password', name: "nameofuser" };
             const createdUser = { id: '1', ...userDto };
 
             jest.spyOn(userRepository, 'save').mockResolvedValue(createdUser as User);

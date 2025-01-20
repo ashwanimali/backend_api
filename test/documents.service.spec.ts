@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DocumentsService } from './documents.service';
+import { DocumentsService } from '../src/documents/documents.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Document } from './document.entity';
+import { Document } from '../src/documents/document.entity';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 

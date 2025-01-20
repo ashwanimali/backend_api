@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
+import { AuthService } from '../src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import { HashUtil } from '../common/utils/hash.util';
+import { UsersService } from '../src/users/users.service';
+import { HashUtil } from '../src/common/utils/hash.util';
 import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
